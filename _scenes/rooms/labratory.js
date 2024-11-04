@@ -25,4 +25,4 @@ const labratory = {
     },
 }
 
-export { labratory}
+export {labratory}

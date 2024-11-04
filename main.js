@@ -36,6 +36,8 @@ const inventory = {
 
 const solution = ["ABC", "RGB", "NIK"]
 
+const substr = 'Books';
+
 const nounSolutions = ["Chains", "Glass", "Metal"]
 
 const verbSolutions = ["Experiment", "Run", "Hide"]
@@ -54,7 +56,6 @@ let selectionChoices = [
 ];
 
 let mainChoices = [
-  // { value: 'The Room', name: 'The Room Room' },
   { value: "The Room", name: "Back" },
   { value: "Books", name: "Books" },
   { value: "Markings", name: "Markings" },
@@ -68,21 +69,23 @@ let northChoices = [
   { value: "Get Item", name: "Get Item" },
   { value: "Books", name: "North Books" },
   { value: "Clue", name: "Clue" },
+  { value: "Knight", name: "Frozen Knight" },
   { value: "North Puzzle", name: "North Puzzle" },
 ];
 
 let southChoices = [
   { value: "The Room", name: "Back" },
   { value: "The Trap", name: "The Trap" },
+  { value: "Socks", name: "Warm Socks" },
   { value: "Books", name: "South Books" },
-  { value: "Markings", name: "Markings" },
+  { value: "Get Item", name: "Get Item" },
   { value: "South Puzzle", name: "South Puzzle" },
 ];
 
 let eastChoices = [
   { value: "The Room", name: "Back" },
-  { value: "Experiments", name: "Abandoned Experiments" },
-  { value: "Glass", name: "Shattered Glass" },
+  { value: "Experiments", name: "Abandoned Experiments" }, 
+  { value: "Vials", name: "Broken Vials" },
   { value: "Books", name: "East Books" },
   { value: "Diagrams", name: "Strange Diagrams" },
   { value: "Apparatus", name: "Sinister Apparatus" },
@@ -90,13 +93,12 @@ let eastChoices = [
 ];
 
 let westChoices = [
-  // { value: 'The Room', name: 'The WEST' },
   { value: "The Room", name: "Back" },
-  { value: "Metal", name: "Metal" },
-  { value: "Glass", name: "Glass" },
+  { value: "Metal", name: "Cold Metal" },
+  { value: "Glass", name: "Gleaming Glass" },
   { value: "Books", name: "West Books" },
-  { value: "Instruments", name: "Instruments" },
-  { value: "Chains", name: "Chains" },
+  { value: "Instruments", name: "Strange Instruments" },
+  { value: "Chains", name: "Rusty Chains" },
   { value: "West Puzzle", name: "West Puzzle" },
 ];
 
@@ -193,15 +195,12 @@ async function chooseDirection() {
       currentRoom.east = false;
       currentRoom.west = false;
       currentRoom.north = true;
-      if (northSolution === true) {
 
-      }
-      else {await askSequence();}
 
       console.log("---");
       console.log("You choose North");
       console.log("---");
-      console.log(inventory.items);
+    //   console.log(inventory.items);
       // currentRoom.north = false;
       // await continueGame();
       await chooseDirection();
@@ -233,7 +232,8 @@ async function chooseDirection() {
       console.log("---");
       console.log(inventory.items);
       // let inRoom = true
-      while (toon.health > 50) {
+      await askSequence();
+      while (toon.health > 60) {
         toon.health -= 10;
         console.log(`You have ${toon.health} health`);
       }
@@ -282,9 +282,9 @@ async function chooseDirection() {
       // await lookAroundMenu();
       // console.log('You chose West');
       break;
-    //
-    // Puzzles
-    //
+//
+// Puzzles
+//
     case "North Puzzle":
       if (inventory.items.includes("North Room")) {
         console.log("You have already been here");
@@ -320,37 +320,49 @@ async function chooseDirection() {
       await chooseDirection();
       break;
     case "Room Puzzle":
-      if (inventory.items.length >= 4) {
+    tallyScore();
+    if (inventory.items.length >= 4) {
         console.log("You have all the items");
         console.log("You have completed the game");
         process.exit();
-      }
-      console.log("You see markings");
-      console.log("~~~~~~~~~~~~~~~~~~~~~");
-      await chooseDirection();
-      break;
-    //
-    // Main Room
-    //
-    case "Books":
-      if (currentRoom.east === true) {
-        console.log("east books");
-      }
-      if (currentRoom.theroom === true) {
-        console.log("the room books");
-      }
-      if (currentRoom.west === true) {
-        console.log("west books");
-      }
-      if (currentRoom.north === true) {
-        console.log("north books");
-      }
-      if (currentRoom.south === true) {
-        console.log("south books");
-      }
-      await chooseDirection();
-      break;
-    case "markings":
+        }
+    console.log("You see markings");
+    console.log("~~~~~~~~~~~~~~~~~~~~~");
+    await chooseDirection();
+    break;
+//Books
+      case "Books":
+        if (currentRoom.east === true) {
+          console.log("east books");
+          inventory.items.push("East Books");
+        }
+        if (currentRoom.theroom === true) {
+            console.log("the room books");
+            inventory.items.push("The Final Room Books");
+        }
+        if (currentRoom.west === true) {
+            console.log("west books");
+            inventory.items.push("West Books");
+        }
+        if (currentRoom.north === true) {
+            console.log("north books");
+            inventory.items.push("North Books");
+        }
+        if (currentRoom.south === true) {
+            console.log("south books");
+            inventory.items.push("South Books");
+        }
+        await chooseDirection();
+        break;
+//get random item
+    case "Get Item":
+        await chooseDirection()
+        break
+        
+//
+// Main Room
+//
+    case "Markings":
       console.log("You see markings");
       console.log("~~~~~~~~~~~~~~~~~~~~~");
       await chooseDirection();
@@ -363,38 +375,61 @@ async function chooseDirection() {
       console.log("You see Secrets");
       await chooseDirection();
       break;
-    //
-    //North Room
-    //
-    case "Get Item":
-      break;
+//
+//North Room
+//
+    case "Knight":
+        await chooseDirection()
+        break
     case "Clue":
-      break;
-    //
-    // East Room
-    //
+        await chooseDirection()
+        break;
+//
+// East Room
+//
     case "Experiments":
-      break;
-    case "Glass":
-      break;
+        await chooseDirection()
+        break;
+    case "Vials":
+        await chooseDirection()
+        break
     case "Diagrams":
-      break;
+        await chooseDirection()
+        break;
     case "Apparatus":
-      break;
-    //
-    //West Room
-    //
+        await chooseDirection()
+        break;
+//
+//West Room
+//
     case "Metal":
-      break;
-    case "Chains":
-      break;
+        await chooseDirection()
+        break;
+    case "Glass":
+        await chooseDirection()
+        break;
     case "Instruments":
-      break;
+        await chooseDirection()
+        break;
+    case "Chains":
+        await chooseDirection()
+        break;
+//
+//South Room
+//
+    case "Socks":
+        await chooseDirection()
+        break
     case "The Trap":
-      break;
+        await chooseDirection()
+        break;
+//
+//default
+//
     case "default":
-      console.log("You chose the default");
-      break;
+        console.log("You chose the default");
+        await chooseDirection()
+        break;
   }
   return toon;
 }
@@ -430,6 +465,15 @@ async function continueGame() {
   }
 }
 
+function tallyScore(){
+    let score = 0;
+    let strVal = inventory.items.filter((str => str.includes(substr)));
+    if (typeof strVal !== 'undefined' && strVal.length > 0) {
+        // console.log(inventory.items);
+        score += 1;
+    } else { console.log("Nope")}
+    console.log(`score: ${score}`);
+}
 console.log("~~---~~");
 console.log("The Room");
 console.log("~~---~~");
